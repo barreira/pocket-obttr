@@ -57,12 +57,12 @@ def export_to_csv(articles):
     except FileNotFoundError:
         pass
 
-    with open('pocket_obttr.csv', 'w') as file:
+    with open("pocket_obttr.csv", "w") as file:
         for item_id, ttr in articles.items():
             open_article_url = f"https://app.getpocket.com/read/{item_id}"
 
             file.write(f"{item_id},{ttr},{open_article_url}")
-            file.write('\n')
+            file.write("\n")
 
 
 def main():
@@ -73,7 +73,7 @@ def main():
     request_token = get_request_token(consumer_key, "https://www.google.com/")
     auth_redirect_url = "https://www.google.com/"
 
-    authorization_url = f'https://getpocket.com/auth/authorize?request_token={request_token}&redirect_uri={auth_redirect_url}'
+    authorization_url = f"https://getpocket.com/auth/authorize?request_token={request_token}&redirect_uri={auth_redirect_url}"
 
     print("Please visit the following URL to give authorization to this app", authorization_url, sep="\n")
 
@@ -85,12 +85,12 @@ def main():
 
     print(f"Authorization successful for user {username}")
 
-    # Get the user's articles
+    # Get the user"s articles
 
     articles = get_user_pocket_articles(consumer_key, access_token)
     # print(articles)
 
-    # Sort articles by "time to read" (and discard articles that don't include this)
+    # Sort articles by "time to read" (and discard articles that don"t include this)
 
     articles = sort_articles_by_time_to_read(articles)
 
