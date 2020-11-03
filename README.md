@@ -5,3 +5,13 @@ Simple command line app that retrieves a [Pocket](https://www.getpocket.com/) us
 I have a lot of stuff saved in Pocket. I like reading the shortest articles first if I don't have the time to spare. Pocket only sorts by oldest/newest. Pocket doesn't have sort by "time to read". I built this.
 
 _Note: It is required that you authenticate and give the app read access so as to be able to get the articles you have saved in Pocket._
+
+&nbsp;
+
+<p align="center">
+  <img src="output.png" alt="Results (v1.1)" width="400"/>
+</p>
+
+<p align="center">
+  <img src="result.png" alt="Results (v1.1)" width="400"/>
+</p>
