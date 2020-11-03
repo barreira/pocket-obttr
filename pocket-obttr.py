@@ -75,7 +75,7 @@ def main():
 
     authorization_url = f"https://getpocket.com/auth/authorize?request_token={request_token}&redirect_uri={auth_redirect_url}"
 
-    print("Please visit the following URL to give authorization to this app", authorization_url, sep="\n")
+    print("Please visit the following URL to give authorization to this app:", authorization_url)
 
     input("Press Enter to continue...")
 
