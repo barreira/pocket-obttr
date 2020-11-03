@@ -51,13 +51,13 @@ def sort_articles_by_time_to_read(articles):
     return a_with_ttr
 
 
-def export_to_csv(articles):
+def export_to_csv(articles, file_name):
     try:
-        os.remove("pocket_obttr.csv")
+        os.remove(f"{file_name}.csv")
     except FileNotFoundError:
         pass
 
-    with open("pocket_obttr.csv", "w") as file:
+    with open(f"{file_name}.csv", "w") as file:
         for item_id, ttr in articles.items():
             open_article_url = f"https://app.getpocket.com/read/{item_id}"
 
@@ -96,7 +96,11 @@ def main():
 
     # Export results to .csv file
 
-    export_to_csv(articles)
+    file_name = "pocket-obttr"
+
+    export_to_csv(articles, file_name)
+
+    print(f"Results exported to '{file_name}.csv' file")
 
     return 0
 
