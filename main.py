@@ -35,19 +35,34 @@ def get_user_pocket_articles(consumer_key, access_token):
     return response_as_json["list"]
 
 
-def add_ttr_tags_to_articles(articles):
-    count = 0
+def sort_articles_by_time_to_read(articles):
+    a_with_ttr = {}
 
     for article_id, article in articles.items():
         try:
-            # time_to_read = article["time_to_read"]
+            time_to_read = article["time_to_read"]
+            item_id = article["item_id"]
 
-            # add_tag_to_article(article_id, time_to_read)
-            count += 1
+            a_with_ttr[item_id] = time_to_read
         except KeyError:
             pass
 
-    print(count)
+    a_with_ttr = {k: v for k, v in sorted(a_with_ttr.items(), key=lambda item: item[1])}
+    return a_with_ttr
+
+
+def export_to_csv(articles):
+    try:
+        os.remove("pocket_obttr.csv")
+    except FileNotFoundError:
+        pass
+
+    with open('pocket_obttr.csv', 'w') as file:
+        for item_id, ttr in articles.items():
+            open_article_url = f"https://app.getpocket.com/read/{item_id}"
+
+            file.write(f"{item_id},{ttr},{open_article_url}")
+            file.write('\n')
 
 
 def main():
@@ -75,9 +90,13 @@ def main():
     articles = get_user_pocket_articles(consumer_key, access_token)
     # print(articles)
 
-    # Add a tag to them with their time to read
+    # Sort articles by "time to read" (and discard articles that don't include this)
 
-    add_ttr_tags_to_articles(articles)
+    articles = sort_articles_by_time_to_read(articles)
+
+    # Export results to .csv file
+
+    export_to_csv(articles)
 
     return 0
 
