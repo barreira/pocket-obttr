@@ -58,6 +58,9 @@ def export_to_csv(articles, file_name):
         pass
 
     with open(f"{file_name}.csv", "w") as file:
+        file.write("Item ID, Time to read, Link")
+        file.write("\n")
+
         for item_id, ttr in articles.items():
             open_article_url = f"https://app.getpocket.com/read/{item_id}"
 
