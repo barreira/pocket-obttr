@@ -7,17 +7,15 @@ load_dotenv()
 
 
 def get_request_token(consumer_key, redirect_uri):
-    response = requests.get(
-        "https://getpocket.com/v3/oauth/request", params={"consumer_key": consumer_key, "redirect_uri": redirect_uri}
-    )
+    response = requests.get("https://getpocket.com/v3/oauth/request",
+                            params={"consumer_key": consumer_key, "redirect_uri": redirect_uri})
 
     return response.text[5:]  # remove prefix "code="
 
 
 def get_access_token_and_username(consumer_key, request_token):
-    response = requests.get(
-        "https://getpocket.com/v3/oauth/authorize", params={"consumer_key": consumer_key, "code": request_token}
-    )
+    response = requests.get("https://getpocket.com/v3/oauth/authorize",
+                            params={"consumer_key": consumer_key, "code": request_token})
 
     parsed_response = response.text[13:].split("&username=")  # remove prefix "access_token="
 
@@ -25,10 +23,9 @@ def get_access_token_and_username(consumer_key, request_token):
 
 
 def get_user_pocket_articles(consumer_key, access_token):
-    response = requests.get(
-        "https://getpocket.com/v3/get",
-        params={"consumer_key": consumer_key, "access_token": access_token, "contentType": "article"}
-    )
+    params = {"consumer_key": consumer_key, "access_token": access_token, "contentType": "article"}
+
+    response = requests.get("https://getpocket.com/v3/get", params=params)
 
     response_as_json = json.loads(response.text)
 
@@ -97,7 +94,8 @@ def main():
     request_token = get_request_token(consumer_key, "https://www.google.com/")
     auth_redirect_url = "https://www.google.com/"
 
-    authorization_url = f"https://getpocket.com/auth/authorize?request_token={request_token}&redirect_uri={auth_redirect_url}"
+    authorization_url = f"https://getpocket.com/auth/authorize?request_token={request_token}" \
+                        f"&redirect_uri={auth_redirect_url}"
 
     print("Please visit the following URL to give authorization to this app:", authorization_url)
 
@@ -109,11 +107,11 @@ def main():
 
     print(f"Authorization successful for user {username}")
 
-    # Get the user"s articles
+    # Get the user's articles
 
     articles = get_user_pocket_articles(consumer_key, access_token)
 
-    # Sort articles by "time to read" (and discard articles that don"t include this)
+    # Sort articles by "time to read" (and discard articles that don't include this field)
 
     articles = sort_articles_by_time_to_read(articles)
 
