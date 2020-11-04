@@ -11,7 +11,7 @@ def get_request_token(consumer_key, redirect_uri):
         "https://getpocket.com/v3/oauth/request", params={"consumer_key": consumer_key, "redirect_uri": redirect_uri}
     )
 
-    return response.text.lstrip("code=")
+    return response.text[5:]  # remove prefix "code="
 
 
 def get_access_token_and_username(consumer_key, request_token):
@@ -19,7 +19,7 @@ def get_access_token_and_username(consumer_key, request_token):
         "https://getpocket.com/v3/oauth/authorize", params={"consumer_key": consumer_key, "code": request_token}
     )
 
-    parsed_response = response.text.lstrip("access_token=").split("&username=")
+    parsed_response = response.text[13:].split("&username=")  # remove prefix "access_token="
 
     return {"access_token": parsed_response[0], "username": parsed_response[1]}
 
@@ -27,7 +27,7 @@ def get_access_token_and_username(consumer_key, request_token):
 def get_user_pocket_articles(consumer_key, access_token):
     response = requests.get(
         "https://getpocket.com/v3/get",
-        params={"consumer_key": consumer_key, "access_token": access_token}
+        params={"consumer_key": consumer_key, "access_token": access_token, "contentType": "article"}
     )
 
     response_as_json = json.loads(response.text)
