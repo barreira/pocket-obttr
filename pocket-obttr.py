@@ -40,14 +40,33 @@ def sort_articles_by_time_to_read(articles):
 
     for article_id, article in articles.items():
         try:
-            time_to_read = article["time_to_read"]
             item_id = article["item_id"]
+            is_article = article["is_article"]
+            ttr = article["time_to_read"]
+            given_title = article["given_title"]
+            resolved_title = article["resolved_title"]
+            given_url = article["given_url"]
 
-            a_with_ttr[item_id] = time_to_read
+            if given_title != "":
+                title = given_title
+            elif resolved_title != "":
+                title = resolved_title
+            else:
+                title = given_url
+
+            if is_article == "1":
+                link = f"https://app.getpocket.com/read/{item_id}"
+            else:
+                link = given_url
+
+            details = {"title": title, "ttr": ttr, "link": link}
+
+            a_with_ttr[item_id] = details
         except KeyError:
             pass
 
-    a_with_ttr = {k: v for k, v in sorted(a_with_ttr.items(), key=lambda item: item[1])}
+    a_with_ttr = {k: v for k, v in sorted(a_with_ttr.items(), key=lambda item: item[1]["ttr"])}
+
     return a_with_ttr
 
 
@@ -58,13 +77,15 @@ def export_to_csv(articles, file_name):
         pass
 
     with open(f"{file_name}.csv", "w") as file:
-        file.write("Item ID, Time to read, Link")
+        file.write("Item ID, Title, Time to read, Link")
         file.write("\n")
 
-        for item_id, ttr in articles.items():
-            open_article_url = f"https://app.getpocket.com/read/{item_id}"
+        for item_id, a_details in articles.items():
+            title = a_details["title"].replace("\"", "\"\"")
+            ttr = a_details["ttr"]
+            link = a_details["link"]
 
-            file.write(f"{item_id},{ttr},{open_article_url}")
+            file.write(f"{item_id},\"{title}\",{ttr},{link}")
             file.write("\n")
 
 
@@ -91,7 +112,6 @@ def main():
     # Get the user"s articles
 
     articles = get_user_pocket_articles(consumer_key, access_token)
-    # print(articles)
 
     # Sort articles by "time to read" (and discard articles that don"t include this)
 
@@ -100,7 +120,6 @@ def main():
     # Export results to .csv file
 
     file_name = "pocket-obttr"
-
     export_to_csv(articles, file_name)
 
     print(f"Results exported to '{file_name}.csv' file")
